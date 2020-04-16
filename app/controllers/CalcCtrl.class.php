@@ -1,25 +1,23 @@
 <?php
 
-require_once $conf->root_path.'/lib/smarty/Smarty.class.php';
-require_once $conf->root_path.'/lib/Messages.class.php';
-require_once $conf->root_path.'/app/calc/CalcForm.class.php';
-require_once $conf->root_path.'/app/calc/CalcResult.class.php';
+namespace app\controllers;
+
+use app\forms\CalcForm;
+use app\transfer\CalcResult;
 
 class CalcCtrl { 
-    private $msgs;
     private $form;
     private $wynik;
     
     //konstruktor
     public function __construct(){
-        $this->msgs = new Messages();
         $this->form = new CalcForm();
         $this->wynik = new CalcResult();
 }
 public function getParams(){
-	$this->form->Baza = isset($_REQUEST['Baza']) ? $_REQUEST['Baza'] : null;
-	$this->form->IloscShota = isset ($_REQUEST ['IloscShota'])? $_REQUEST['IloscShota'] : null;
-	$this->form->MocShota = isset ($_REQUEST ['MocShota']) ? $_REQUEST['MocShota'] : null;
+	$this->form->Baza = getFromRequest('Baza');
+	$this->form->IloscShota = getFromRequest('IloscShota');
+	$this->form->MocShota = getFromRequest('MocShota');
 }
 
 public function validate(){
@@ -28,23 +26,23 @@ public function validate(){
 }
 
 if ($this->form->Baza == "") {
-	$this->msgs->addError('Nie podano ilości bazy');
+    getMessages()->addError('Nie podano ilości bazy');
 }
 if ($this->form->IloscShota == "") {
-	$this->msgs->addError('Nie podano ilości shota');
+    getMessages()->addError('Nie podano ilości shota');
 }
 
-	if (! $this->msgs->isError()) {
+	if (!getMessages()->isError()) {
 	
 	if (! is_numeric($this->form->Baza)) {
-		$this->msgs->addError('Ilość bazy nie może być liczbą zmiennoprzecinkową!');
+            getMessages()->addError('Ilość bazy nie może być liczbą zmiennoprzecinkową!');
 	}
 	
 	if (! is_numeric($this->form->IloscShota)) {
-		$this->msgs->addError('Ilosc Shota nie może być liczbą zmiennoprzecinkową!');
+            getMessages()->addError('Ilosc Shota nie może być liczbą zmiennoprzecinkową!');
 	}	
         }
-        return ! $this->msgs->isError();
+        return !getMessages()->isError();
 
 }
 public function process(){
@@ -77,21 +75,15 @@ public function process(){
     }
 
 public function generateView(){
-   global $conf;
    
-   $smarty = new Smarty();
-   $smarty->assign('conf',$conf);
-  
-    $smarty->assign('page_title','Kalkulator Nikotynowy');
-    $smarty->assign('page_description','Obiektowosc');
-    $smarty->assign('page_header','Kalkulator Nikotynowy');
+    getSmarty()->assign('page_title','Kalkulator Nikotynowy');
+    getSmarty()->assign('page_description','Obiektowosc');
+    getSmarty()->assign('page_header','Kalkulator Nikotynowy');
 
-    $smarty->assign('form',$this->form);
-    $smarty->assign('wynik',$this->wynik);
-    $smarty->assign('msgs',$this->msgs);
+    getSmarty()->assign('form',$this->form);
+    getSmarty()->assign('wynik',$this->wynik);
 
 //wywołanie szablonu
-    $smarty->display($conf->root_path.'/app/calc/CalcView.tpl');
-
-}
+    getSmarty()->display('CalcView.tpl');
+    }
 }

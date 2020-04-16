@@ -1,4 +1,4 @@
-{extends file=$conf->root_path|cat:"/templates/main.tpl"}
+{extends file="main.tpl"}
 
 {block name=header}{$page_header}{/block}
 
@@ -32,13 +32,13 @@
             </ol>
 		
 	{/if}
-        
+        <div class ='fit'>
 	{if isset($wynik->wynik)}
 		<h4>Wynik: </hr>
-		<p>{$wynik->IloscLiquidu} ml ...{$wynik->wynik} mg/ml</p>
+		<p>Wychodzi ci {$wynik->IloscLiquidu} ml liquidu o stęzeniu nikotynowym {$wynik->wynik} mg/ml</p>
 	{/if}
         	
-       
+        </div>
         </div>
 {/block}
 
